@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Revisión rápida HITL</h1>
+    <p style="margin:4px 0 0;color:var(--text-muted);">Top documentos ordenados por nº de issues</p>
+  </div>
+  <div class="tenant-pill">Tenant · {{ active_tenant }}</div>
+</div>
+
+{% if items %}
+<form method="post" action="/review/bulk" class="card" id="quick-form">
+  <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+  <input type="hidden" name="action" id="bulk-action" value="accept">
+  <div class="page-header" style="margin-bottom:12px;">
+    <h3 style="margin:0;">Top pendientes ({{ items|length }})</h3>
+    <div class="actions">
+      <a class="btn btn-secondary" href="/review">Cola completa</a>
+      <a class="btn btn-secondary" href="/review/summary">Resumen issues</a>
+      <label>Issue
+        <input type="text" name="issue" value="{{ issue_filter }}" placeholder="AMOUNT_MISMATCH" onkeydown="event.stopPropagation();">
+      </label>
+      <button class="btn btn-secondary" type="submit" formaction="/review/quick">Filtrar</button>
+    </div>
+  </div>
+  <div class="actions" style="margin-bottom:8px;">
+    <div>
+      <button class="btn btn-primary" type="submit" onclick="setAction('accept')">Aceptar (A)</button>
+      <button class="btn btn-secondary" type="submit" onclick="setAction('duplicate')">Duplicado (D)</button>
+      <button class="btn" type="submit" onclick="setAction('reprocess')">Reprocesar (R)</button>
+      <label style="margin-left:12px;"><input type="checkbox" id="select-all"> Seleccionar todo</label>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th></th><th>Doc</th><th>Proveedor</th><th>Importe</th><th>Issues</th><th>Conf.</th></tr></thead>
+      <tbody>
+        {% for item in items %}
+        <tr data-doc="{{ item.doc_id }}">
+          <td><input type="checkbox" name="doc_ids" value="{{ item.doc_id }}"></td>
+          <td><strong>{{ item.doc_id[:8] }}</strong><br><small>{{ item.doc_type }}</small></td>
+          <td>{{ item.supplier.name }}<br><span style="color:var(--text-muted);">{{ item.supplier.nif }}</span></td>
+          <td>{{ "%.2f"|format(item.totals.gross) }} {{ item.invoice.currency }}</td>
+          <td>
+            {% for issue in item.issues_text %}
+              <span class="pill pill-warning">{{ issue }}</span>
+            {% endfor %}
+          </td>
+          <td>
+            <small>G {{ item.confidences.global or "-" }}</small><br>
+            <small>O {{ item.confidences.ocr or "-" }}</small><br>
+            <small>E {{ item.confidences.entry or "-" }}</small>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</form>
+
+<script>
+function setAction(action){ document.getElementById('bulk-action').value = action; }
+const form = document.getElementById('quick-form');
+const selectAll = document.getElementById('select-all');
+selectAll?.addEventListener('change', (e) => {
+  document.querySelectorAll('input[name=\"doc_ids\"]').forEach(cb => cb.checked = e.target.checked);
+});
+document.addEventListener('keydown', (e) => {
+  if (['INPUT','TEXTAREA'].includes(e.target.tagName)) return;
+  if (e.key.toLowerCase() === 'a') { setAction('accept'); form.submit(); }
+  if (e.key.toLowerCase() === 'd') { setAction('duplicate'); form.submit(); }
+  if (e.key.toLowerCase() === 'r') { setAction('reprocess'); form.submit(); }
+});
+</script>
+{% else %}
+<div class="empty-state">
+  <p>No hay documentos pendientes.</p>
+</div>
+{% endif %}
+{% endblock %}

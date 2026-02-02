@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Resumen HITL</h1>
+    <p style="margin:4px 0 0;color:var(--text-muted);">Issues pendientes agrupados</p>
+  </div>
+  <div class="tenant-pill">Tenant · {{ active_tenant }}</div>
+</div>
+
+<div class="card">
+  <div class="page-header" style="margin-bottom:12px;">
+    <h3 style="margin:0;">Issues por frecuencia</h3>
+    <a class="btn btn-secondary" href="/review">Volver a la cola</a>
+  </div>
+  <p>Total pendientes: <strong>{{ summary.total }}</strong></p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Issue</th><th>Descripción</th><th>Recuentos</th><th>Ejemplos</th></tr></thead>
+      <tbody>
+        {% for code, count in summary.counts %}
+        <tr>
+          <td><span class="pill pill-warning">{{ code }}</span></td>
+          <td>{{ issue_messages.get(code, code) }}</td>
+          <td>{{ count }}</td>
+          <td>
+            {% for doc_id in summary.samples.get(code, []) %}
+              <a href="/review/{{ doc_id }}" class="pill">{{ doc_id[:8] }}</a>
+            {% endfor %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

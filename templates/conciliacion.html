@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Conciliación bancaria</h1>
+    <p style="margin:4px 0 0;color:var(--text-muted);">Movimientos sin conciliar y matches actuales</p>
+  </div>
+  <div class="tenant-pill">Tenant · {{ active_tenant }}</div>
+</div>
+
+{% if message %}<div class="notice">{{ message }}</div>{% endif %}
+
+<div class="card">
+  <h3>Movimientos sin match</h3>
+  {% if unmatched %}
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>TX</th><th>Fecha</th><th>Importe</th><th>Descripción</th><th>Acción</th></tr></thead>
+      <tbody>
+        {% for tx in unmatched %}
+        <tr>
+          <td>{{ tx.tx_id[:8] }}</td>
+          <td>{{ tx.date }}</td>
+          <td>{{ "%.2f"|format(tx.amount) }} {{ tx.currency }}</td>
+          <td>{{ tx.description }}</td>
+          <td>
+            <form method="post" action="/conciliacion/force" class="form-inline">
+              <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+              <input type="hidden" name="tx_id" value="{{ tx.tx_id }}">
+              <input type="text" name="doc_id" placeholder="doc_id destino" required style="width:120px;">
+              <input type="number" step="0.01" name="amount" placeholder="importe opcional" style="width:120px;">
+              <button class="btn" type="submit">Forzar match manual</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="pill pill-success">Todo conciliado 🎉</p>
+  {% endif %}
+</div>
+
+<div class="card">
+  <h3>Matches actuales</h3>
+  {% if matches %}
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>TX</th><th>Doc</th><th>Importe</th><th>Descripción</th><th>Acción</th></tr></thead>
+      <tbody>
+        {% for row in matches %}
+        <tr>
+          <td>{{ row.tx_id[:8] }}</td>
+          <td>{{ row.matched_doc_id[:8] if row.matched_doc_id else "-" }}</td>
+          <td>{{ "%.2f"|format(row.amount) }} {{ row.currency }}</td>
+          <td>{{ row.description }}</td>
+          <td>
+            <form method="post" action="/conciliacion/clear">
+              <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+              <input type="hidden" name="tx_id" value="{{ row.tx_id }}">
+              <button class="btn btn-secondary" type="submit">Romper match</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="pill">No hay matches registrados.</p>
+  {% endif %}
+</div>
+{% endblock %}

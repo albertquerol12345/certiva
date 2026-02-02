@@ -1,0 +1,24 @@
+{
+  "default": {
+    "erp": "a3innuva",
+    "default_journal": "COMPRAS",
+    "supplier_account": "410000",
+    "sales_journal": "VENTAS",
+    "customer_account": "430000"
+  },
+  "demo": {
+    "erp": "a3innuva",
+    "default_journal": "COMPRAS",
+    "supplier_account": "410000",
+    "sales_journal": "VENTAS",
+    "customer_account": "430000"
+  },
+  "cliente_b": {
+    "erp": "a3innuva",
+    "default_journal": "GASTOS",
+    "supplier_account": "410200",
+    "sales_journal": "VENTAS",
+    "customer_account": "430200",
+    "notes": "Tenant de ejemplo para demos"
+  }
+}

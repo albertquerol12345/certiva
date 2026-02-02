@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Jobs programados</h1>
+{% if message %}<div class="alert">{{ message }}</div>{% endif %}
+{% if jobs %}
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Nombre</th>
+      <th>Tipo</th>
+      <th>Schedule</th>
+      <th>Estado</th>
+      <th>Último run</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for job in jobs %}
+    <tr>
+      <td>{{ job.id }}</td>
+      <td>{{ job.name }}</td>
+      <td>{{ job.job_type }}</td>
+      <td>{{ job.schedule or "manual" }}</td>
+      <td>
+        {% if job.enabled %}ON{% else %}OFF{% endif %}
+        · {{ job.last_status or "-" }}
+        {% if job.last_error %}<br/><small>Error: {{ job.last_error }}</small>{% endif %}
+      </td>
+      <td>{{ job.last_run_at or "-" }}</td>
+      <td class="actions">
+        <form method="post" action="/admin/jobs/{{ job.id }}/run">
+          <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+          <button class="btn btn-primary" type="submit">Run</button>
+        </form>
+        {% if job.enabled %}
+        <form method="post" action="/admin/jobs/{{ job.id }}/disable">
+          <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+          <button class="btn btn-secondary" type="submit">OFF</button>
+        </form>
+        {% else %}
+        <form method="post" action="/admin/jobs/{{ job.id }}/enable">
+          <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+          <button class="btn btn-secondary" type="submit">ON</button>
+        </form>
+        {% endif %}
+        <form method="post" action="/admin/jobs/{{ job.id }}/delete" onsubmit="return confirm('¿Eliminar job?')">
+          <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+          <button class="btn btn-danger" type="submit">Borrar</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>No hay jobs definidos.</p>
+{% endif %}
+{% endblock %}

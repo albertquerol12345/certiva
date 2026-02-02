@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Configurar tenant: {{ tenant_name }}</h1>
+{% if message %}<div class="alert">{{ message }}</div>{% endif %}
+<div class="card">
+  <form method="post" action="/admin/tenants/{{ tenant_name }}">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+    <label for="erp">ERP</label>
+    <input type="text" id="erp" name="erp" value="{{ raw_config.get('erp', config.erp) }}" required />
+
+    <label for="default_journal">Diario compras</label>
+    <input type="text" id="default_journal" name="default_journal" value="{{ raw_config.get('default_journal', config.default_journal) }}" required />
+
+    <label for="supplier_account">Cuenta proveedor</label>
+    <input type="text" id="supplier_account" name="supplier_account" value="{{ raw_config.get('supplier_account', config.supplier_account) }}" required />
+
+    <label for="sales_journal">Diario ventas</label>
+    <input type="text" id="sales_journal" name="sales_journal" value="{{ raw_config.get('sales_journal', config.sales_journal) }}" required />
+
+    <label for="customer_account">Cuenta cliente</label>
+    <input type="text" id="customer_account" name="customer_account" value="{{ raw_config.get('customer_account', config.customer_account) }}" required />
+
+    <label for="notes">Notas</label>
+    <textarea id="notes" name="notes" rows="3">{{ raw_config.get('notes', '') }}</textarea>
+
+    <div style="margin-top: 16px;">
+      <button class="btn btn-primary" type="submit">Guardar</button>
+      <a class="btn btn-secondary" href="/admin/tenants">Volver</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Tenants</h1>
+{% if message %}<div class="alert">{{ message }}</div>{% endif %}
+{% if tenants %}
+<table>
+  <thead>
+    <tr>
+      <th>Tenant</th>
+      <th>ERP</th>
+      <th>Diario compras</th>
+      <th>Cuenta proveedor</th>
+      <th>Diario ventas</th>
+      <th>Cuenta cliente</th>
+      <th>Notas</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for name, cfg in tenants.items() %}
+    <tr>
+      <td>{{ name }}</td>
+      <td>{{ cfg.erp }}</td>
+      <td>{{ cfg.default_journal }}</td>
+      <td>{{ cfg.supplier_account }}</td>
+      <td>{{ cfg.sales_journal }}</td>
+      <td>{{ cfg.customer_account }}</td>
+      <td>{{ raw_tenants.get(name, {}).get("notes", "") }}</td>
+      <td><a href="/admin/tenants/{{ name }}">Editar</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+<div class="card">
+  <h3>Nuevo tenant</h3>
+  <form method="post" action="/admin/tenants/create">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+    <label for="name">Identificador</label>
+    <input type="text" id="name" name="name" placeholder="ej. cliente_z" required />
+    <button class="btn btn-primary" type="submit">Crear</button>
+  </form>
+</div>
+{% endblock %}

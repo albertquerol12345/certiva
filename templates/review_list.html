@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Revisión HITL</h1>
+    <p style="margin:4px 0 0;color:var(--text-muted);">Documentos pendientes de validación</p>
+  </div>
+  <div class="tenant-pill">Tenant · {{ active_tenant }}</div>
+</div>
+
+<form method="get" class="card">
+  <div class="page-header" style="margin-bottom:12px;">
+    <h3 style="margin:0;">Filtros</h3>
+    <div class="actions">
+      <button class="btn btn-secondary" type="submit">Aplicar filtro</button>
+      <a class="btn btn-secondary" href="/review">Limpiar</a>
+    </div>
+  </div>
+  <div class="actions">
+    <label>Doc type
+      <input type="text" name="doc_type" value="{{ doc_type_filter }}" placeholder="sales" />
+    </label>
+    <label>Issue code
+      <input type="text" name="issue" value="{{ issue_filter }}" placeholder="AMOUNT_MISMATCH" />
+    </label>
+  </div>
+</form>
+
+{% if message %}<div class="notice">{{ message }}</div>{% endif %}
+
+{% if items %}
+<form method="post" action="/review/bulk" class="card">
+  <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+  <div class="actions" style="margin-bottom:16px;">
+    <label style="flex:1;">Acción masiva
+      <select name="action">
+        <option value="accept">Aceptar</option>
+        <option value="duplicate">Marcar duplicado</option>
+        <option value="reprocess">Reprocesar</option>
+      </select>
+    </label>
+    <button class="btn btn-primary" type="submit">Aplicar</button>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th>Doc</th>
+          <th>Proveedor</th>
+          <th>Factura</th>
+          <th>Total</th>
+          <th>Tipo</th>
+          <th>Conciliación</th>
+          <th>Issues</th>
+          <th>Confianzas</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td><input type="checkbox" name="doc_ids" value="{{ item.doc_id }}"></td>
+          <td><strong>{{ item.doc_id[:8] }}</strong></td>
+          <td>{{ item.supplier.name }}<br><span style="color:var(--text-muted);">{{ item.supplier.nif }}</span></td>
+          <td>{{ item.invoice.number }}</td>
+          <td>{{ "%.2f"|format(item.totals.gross) }} {{ item.invoice.currency }}</td>
+          <td><span class="pill pill-info">{{ item.doc_type }}</span></td>
+          <td>
+            {{ "%.1f"|format(item.reconciled_pct * 100) }}%<br>
+            €{{ "%.2f"|format(item.reconciled_amount) }}
+          </td>
+          <td>
+            {% if item.issues_text %}
+              <ul class="list-inline">
+                {% for issue in item.issues_text %}
+                  <li class="pill pill-warning">{{ issue }}</li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <span class="pill pill-success">Sin issues</span>
+            {% endif %}
+          </td>
+          <td>
+            <small>OCR {{ item.confidences.ocr or "-" }}</small><br>
+            <small>Entry {{ item.confidences.entry or "-" }}</small><br>
+            <small>Global {{ item.confidences.global or "-" }}</small>
+          </td>
+          <td><a class="btn btn-secondary" href="/review/{{ item.doc_id }}">Revisar</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</form>
+
+  <div class="page-header" style="margin-top:12px;">
+  <div>
+    {% if has_prev %}
+      <a class="btn btn-secondary" href="/review?page={{ page - 1 }}{% if doc_type_filter %}&doc_type={{ doc_type_filter }}{% endif %}{% if issue_filter %}&issue={{ issue_filter }}{% endif %}">Anterior</a>
+    {% endif %}
+  </div>
+  <div>Página {{ page }}</div>
+  <div>
+    {% if has_next %}
+      <a class="btn btn-secondary" href="/review?page={{ page + 1 }}{% if doc_type_filter %}&doc_type={{ doc_type_filter }}{% endif %}{% if issue_filter %}&issue={{ issue_filter }}{% endif %}">Siguiente</a>
+    {% endif %}
+  </div>
+</div>
+{% else %}
+<div class="empty-state">
+  <p>No hay documentos pendientes.</p>
+  <p>Puedes volver más tarde o ejecutar el watcher.</p>
+</div>
+{% endif %}
+{% endblock %}

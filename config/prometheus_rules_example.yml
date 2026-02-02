@@ -1,0 +1,27 @@
+groups:
+  - name: certiva_alerts
+    rules:
+      - alert: CERTIVA_BatchWarnings
+        expr: certiva_batch_warning_batch_files_mismatch > 0 or certiva_batch_warning_batch_pages_mismatch > 0 or certiva_batch_warning_a3_validation_error > 0
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Warnings en lotes CERTIVA"
+          description: "Se detectaron avisos en los lotes (docs/páginas/A3). Revisar dashboard/RESUMEN."
+      - alert: CERTIVA_ReviewQueueHigh
+        expr: certiva_review_queue_size > 20
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Cola HITL alta"
+          description: "Hay más de 20 documentos pendientes en HITL."
+      - alert: CERTIVA_PageZeroDetected
+        expr: certiva_pages_zero_docs > 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "PDFs con 0 páginas"
+          description: "Se detectaron PDFs sin páginas (posible doble alimentación o escaneo fallido)."

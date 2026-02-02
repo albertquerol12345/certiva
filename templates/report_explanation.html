@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Explicación {{ report_type|upper }}</h1>
+<div class="card">
+<p>
+  Tenant: {{ tenant or "todos" }} |
+  Periodo: {{ date_from }} →
+  {% if date_to %}{{ date_to }}{% else %}+{{ months }} meses{% endif %}
+</p>
+  <pre style="white-space: pre-wrap;">{{ explanation }}</pre>
+</div>
+<p><a href="/">Volver al dashboard</a></p>
+{% endblock %}

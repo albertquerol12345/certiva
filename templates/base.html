@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>CERTIVA Engine</title>
+  <style>
+    :root {
+      --bg: #f7f7fb;
+      --bg-card: #ffffff;
+      --border: #e1e5ee;
+      --text: #111827;
+      --text-muted: #5f6b7c;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --danger: #dc2626;
+      --success: #15803d;
+      --warning: #f59e0b;
+      --radius: 10px;
+      --shadow: 0 16px 30px rgba(15,23,42,0.08);
+      --transition: 0.2s ease;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    a { color: inherit; text-decoration: none; }
+    header {
+      background: #0f172a;
+      color: #fff;
+      padding: 12px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0 12px 30px rgba(15,23,42,0.35);
+    }
+    nav {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    nav a {
+      color: rgba(255,255,255,0.9);
+      font-weight: 500;
+      padding: 6px 10px;
+      border-radius: 8px;
+      transition: background var(--transition);
+    }
+    nav a:hover { background: rgba(255,255,255,0.12); }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .user-badge {
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.18);
+      font-size: 0.9rem;
+    }
+    .container {
+      padding: 32px clamp(16px, 4vw, 48px) 48px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .page-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .page-header h1 {
+      margin: 0;
+      font-size: 1.75rem;
+    }
+    .tenant-pill {
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(37,99,235,0.12);
+      color: var(--primary-dark);
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 20px;
+      box-shadow: 0 8px 20px rgba(15,23,42,0.05);
+      margin-bottom: 20px;
+    }
+    .card h3 { margin-top: 0; }
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+    th {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      background: #f8fafc;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: var(--radius);
+    }
+    .btn {
+      border: none;
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background var(--transition), transform var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-secondary { background: #e2e8f0; color: #0f172a; }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .notice {
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      border: 1px solid #fcd34d;
+      background: #fffbeb;
+      color: #92400e;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.95rem;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-muted);
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+    }
+    .pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .pill-success { background: rgba(21,128,61,0.12); color: var(--success); }
+    .pill-warning { background: rgba(245,158,11,0.15); color: var(--warning); }
+    .pill-info { background: rgba(37,99,235,0.12); color: var(--primary-dark); }
+    .list-inline { display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 8px 0 0; list-style: none; }
+    form.inline { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+    input, select, textarea {
+      font: inherit;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #fff;
+      min-width: 0;
+    }
+    label { font-size: 0.9rem; font-weight: 600; color: var(--text-muted); }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; }
+    @media (max-width: 768px) {
+      header { flex-direction: column; align-items: flex-start; gap: 12px; }
+      nav { width: 100%; }
+      table { font-size: 0.85rem; }
+      .btn { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      {% if user %}
+        <a href="/">Dashboard</a>
+        <a href="/review">Revisión HITL</a>
+        <a href="/assistant">Asistente IA</a>
+        <a href="/demo-upload">Demo rápida</a>
+        {% if user.role == "admin" %}
+          <a href="/admin/jobs">Jobs</a>
+          <a href="/admin/tenants">Tenants</a>
+          <a href="/admin/fiscal">Fiscal</a>
+          <a href="/admin/users">Usuarios</a>
+        {% endif %}
+      {% else %}
+        <a href="/login">Login</a>
+      {% endif %}
+    </nav>
+    {% if user %}
+    <div class="nav-actions">
+      <span class="user-badge">{{ user.username }} · {{ user.role }}</span>
+      <form method="post" action="/logout">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+        <button class="btn btn-secondary" type="submit">Salir</button>
+      </form>
+    </div>
+    {% endif %}
+  </header>
+  <div class="container">
+    {% block content %}{% endblock %}
+  </div>
+</body>
+</html>

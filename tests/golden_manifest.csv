@@ -1,0 +1,35 @@
+filename,category,tenant,supplier,nif,invoice_number,date,due_date,concept,base,vat,gross,currency,vat_breakdown,flow,notes
+golden_01_suministro_iberdrola.pdf,suministros,demo,IBERDROLA SUMINISTRO ESPAÑA S.A.U.,A12345678,IB-2025-0210,2025-02-10,2025-03-07,Suministro eléctrico oficinas febrero,180.50,37.91,218.41,EUR,,AP,
+golden_02_suministro_endesa.pdf,suministros,demo,ENDESA ENERGÍA XXI S.L.U.,B12345001,EN-2025-0187,2025-02-05,2025-02-25,Consumo eléctrico enero,215.30,45.21,260.51,EUR,,AP,
+golden_03_agua_canal.pdf,suministros,demo,CANAL DE ISABEL II S.A.,A84545123,AG-2025-0103,2025-01-28,2025-02-12,Suministro de agua oficinas,95.40,9.54,104.94,EUR,,AP,
+golden_04_gas_naturgy.pdf,suministros,demo,NATURGY IBERIA S.A.,A13579246,NG-2025-0042,2025-02-12,2025-03-09,Facturación gas natural febrero,145.80,30.62,176.42,EUR,,AP,
+golden_05_alquiler_oficina.pdf,alquiler,cliente_b,EDIFICIOS CENTRALES SL,B22223334,ALQ-2025-0005,2025-02-01,2025-03-03,Alquiler oficinas mes febrero,1800.00,378.00,2178.00,EUR,,AP,
+golden_06_alquiler_parking.pdf,alquiler,cliente_b,PARK&CO SL,B66778899,PK-2025-011,2025-02-01,2025-03-03,Plazas de parking febrero,320.00,67.20,387.20,EUR,,AP,
+golden_07_software_m365.pdf,software,demo,MICROSOFT IBERIA SRL,B82387121,MS-2025-9087,2025-02-15,2025-03-17,Suscripción Microsoft 365,320.00,67.20,387.20,EUR,,AP,
+golden_08_software_atlassian.pdf,software,demo,ATLASSIAN PTY LTD,EU998877665,AT-2025-445,2025-02-11,2025-03-13,Licencias Jira/Confluence,250.00,52.50,302.50,EUR,,AP,
+golden_09_servicio_consultoria.pdf,servicios_prof,demo,CONSULTORES CLOUD SA,A55667788,CC-2025-012,2025-01-29,2025-02-28,Consultoría tecnológica Enero,1500.00,315.00,1815.00,EUR,,AP,
+golden_10_servicio_asesoria.pdf,servicios_prof,demo,ASESORES MADRID SL,B44556677,ASE-2025-045,2025-02-05,2025-03-07,Honorarios asesoría fiscal,420.00,88.20,508.20,EUR,,AP,
+golden_11_hosteleria_catering.pdf,hosteleria,demo,CATERING DELUXE SL,B10293847,CAT-2025-19,2025-02-14,2025-03-01,Catering comité dirección,420.00,72.80,492.80,EUR,21:280.00|10:140.00,AP,
+golden_12_hosteleria_evento.pdf,hosteleria,demo,RESTAURANTE TAPAS MADRID SL,B11223344,BTM-2025-33,2025-02-07,2025-02-17,Comida con cliente estratégico,180.00,31.20,211.20,EUR,21:120.00|10:60.00,AP,
+golden_13_intracom_hubspot.pdf,intracomunitaria,demo,HUBSPOT IRELAND LTD,EU372000579,HS-2025-653,2025-02-03,2025-03-05,Suscripción CRM Hubspot (IVA 0%),540.00,0.00,540.00,EUR,0:540.00,AP,
+golden_14_intracom_dropbox.pdf,intracomunitaria,demo,DROPBOX INTERNATIONAL UNLIMITED COMPANY,EU372000988,DB-2025-210,2025-02-09,2025-03-11,Suscripción Dropbox Advanced,199.00,0.00,199.00,EUR,0:199.00,AP,
+golden_15_abono_material.pdf,abono,demo,PAPELERÍA CENTRAL SL,B99887766,ABN-2025-07,2025-02-16,2025-02-16,Abono devolución material defectuoso,-120.00,-25.20,-145.20,EUR,,AP,
+golden_16_abono_servicios.pdf,abono,demo,CONSULTORES CLOUD SA,A55667788,ABN-2025-13,2025-02-18,2025-02-18,Nota de crédito horas no empleadas,-300.00,-63.00,-363.00,EUR,,AP,
+golden_17_marketing_googleads.pdf,marketing,demo,GOOGLE IRELAND LTD,EU372000041,AD-2025-332,2025-02-11,2025-03-13,Campaña Google Ads febrero,890.00,0.00,890.00,EUR,,AP,
+golden_18_telefonia_vodafone.pdf,telefonia,demo,VODAFONE ESPAÑA SAU,A80907397,VF-2025-229,2025-02-06,2025-02-26,Telefonía y datos móviles febrero,260.00,54.60,314.60,EUR,,AP,
+golden_19_seguros_mapfre.pdf,seguros,demo,MAPFRE EMPRESAS SA,A28141935,SEG-2025-004,2025-01-20,2025-02-19,Seguro multirriesgo anual (primer pago),640.00,134.40,774.40,EUR,,AP,
+golden_20_material_oficina.pdf,material_oficina,demo,OFIMARKET SL,B33445566,MAT-2025-055,2025-02-08,2025-02-28,Material de oficina febrero,210.00,44.10,254.10,EUR,,AP,
+golden_21_viajes_hoteles.pdf,viajes,cliente_b,HOTELES IBERIA SL,B44552211,HT-2025-021,2025-02-02,2025-02-17,Alojamiento equipo comercial,560.00,56.00,616.00,EUR,,AP,
+golden_22_mantenimiento_limpieza.pdf,mantenimiento,demo,LIMPIEZAS BRILLAR SL,B22334455,LIM-2025-15,2025-02-12,2025-02-27,Servicio limpieza y mantenimiento oficinas,480.00,100.80,580.80,EUR,,AP,
+golden_23_formacion_online.pdf,formacion,demo,PLATAFORMA FORMACIÓN ONLINE SL,B55667744,FOR-2025-08,2025-02-04,2025-03-06,Formación online equipos soporte,350.00,73.50,423.50,EUR,,AP,
+golden_24_it_support.pdf,it_support,demo,TECH SUPPORT SERVICES SL,B90909090,IT-2025-101,2025-02-10,2025-03-12,Soporte IT y monitorización infra,780.00,163.80,943.80,EUR,,AP,
+golden_25_ventas_servicios_consultoria.pdf,ventas_servicios,demo,CLIENTE INNOVA SL,B76543210,VS-2025-050,2025-02-05,2025-03-07,Servicios de consultoría febrero,2500.00,525.00,3025.00,EUR,,AR,AR: venta servicios
+golden_26_ventas_productos_material.pdf,ventas_productos,demo,DISTRIBUCIONES ATLANTICO SA,A44556677,VP-2025-014,2025-02-08,2025-03-25,Venta material promocional,1800.00,334.00,2134.00,EUR,21:1400.00|10:400.00,AR,AR: multi IVA
+golden_27_ventas_intracom_saas.pdf,ventas_intracom,demo,EUROPE TECH GMBH,EU123456789,VI-2025-007,2025-02-03,2025-03-05,Licencias SaaS intracomunitarias,1200.00,0.00,1200.00,EUR,,AR,AR: intracom
+golden_28_ventas_abono_servicios.pdf,ventas_abono,demo,CLIENTE INNOVA SL,B76543210,VA-2025-003,2025-02-20,2025-02-20,Abono por servicios no prestados,-500.00,-105.00,-605.00,EUR,,AR,AR: nota crédito
+golden_29_ventas_servicios_cliente_b.pdf,ventas_servicios,cliente_b,CLIENTE NORTE CONSULTING SL,B90807060,VS-2025-081,2025-02-12,2025-03-14,Servicios soporte continuo,1800.00,378.00,2178.00,EUR,,AR,
+golden_30_ventas_producto_export.pdf,ventas_intracom,demo,ALPINE RETAIL GMBH,EU998822110,VI-2025-011,2025-02-15,2025-04-01,Suministro hardware intracomunitario,2100.00,0.00,2100.00,EUR,0:2100.00,AR,AR: export
+golden_31_ventas_ticket_evento.pdf,ventas_ticket,demo,CLIENTE EVENTOS EXPRESS,B60708090,VT-2025-030,2025-02-06,2025-02-21,Venta entradas evento interno,420.00,88.20,508.20,EUR,,AR,
+golden_32_ventas_productos_minorista.pdf,ventas_productos,demo,CLIENTE RETAIL BOUTIQUE,B12003450,VP-2025-020,2025-02-18,2025-03-10,Venta productos línea premium,950.00,199.50,1149.50,EUR,,AR,
+golden_33_ventas_servicios_multiiva.pdf,ventas_servicios,demo,CONSORCIO EUROPEO,EU445566778,VS-2025-095,2025-02-10,2025-03-12,Servicios híbridos,900.00,156.00,1056.00,EUR,21:600.00|10:300.00,AR,
+golden_34_ventas_abono_producto.pdf,ventas_abono,demo,DISTRIBUCIONES ATLANTICO SA,A44556677,VA-2025-006,2025-02-22,2025-02-22,Abono devolución producto,-300.00,-63.00,-363.00,EUR,,AR,

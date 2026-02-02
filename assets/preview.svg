@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0f172a"/>
+  <rect x="60" y="60" width="1080" height="510" rx="24" fill="#111827" stroke="#38bdf8" stroke-width="3"/>
+  <text x="110" y="170" fill="#e2e8f0" font-family="Arial, sans-serif" font-size="52">CERTIVA</text>
+  <text x="110" y="230" fill="#94a3b8" font-family="Arial, sans-serif" font-size="26">Invoice automation + human-in-the-loop review</text>
+  <text x="110" y="310" fill="#e2e8f0" font-family="Arial, sans-serif" font-size="22">- OCR -> normalize -> rules -> export</text>
+  <text x="110" y="350" fill="#e2e8f0" font-family="Arial, sans-serif" font-size="22">- Confidence scoring + audit trail</text>
+  <text x="110" y="390" fill="#e2e8f0" font-family="Arial, sans-serif" font-size="22">- Metrics, retries, circuit breakers</text>
+</svg>

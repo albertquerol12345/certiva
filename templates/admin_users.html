@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Gestión de usuarios</h1>
+{% if message %}<div class="alert">{{ message }}</div>{% endif %}
+<table>
+  <thead>
+    <tr>
+      <th>Usuario</th>
+      <th>Rol</th>
+      <th>Estado</th>
+      <th>Cambiar rol</th>
+      <th>Activar / desactivar</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in users %}
+    <tr>
+      <td>{{ row.username }}</td>
+      <td>{{ row.role }}</td>
+      <td>{% if row.is_active %}Activo{% else %}Inactivo{% endif %}</td>
+      <td>
+        <form method="post" action="/admin/users/{{ row.username }}/role">
+          <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+          <select name="role">
+            {% for role in ["admin","operator","viewer"] %}
+            <option value="{{ role }}" {% if role == row.role %}selected{% endif %}>{{ role }}</option>
+            {% endfor %}
+          </select>
+          <button class="btn btn-secondary" type="submit">Actualizar</button>
+        </form>
+      </td>
+      <td>
+        {% if row.is_active %}
+        <form method="post" action="/admin/users/{{ row.username }}/deactivate">
+          <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+          <button class="btn btn-danger" type="submit">Desactivar</button>
+        </form>
+        {% else %}
+        <form method="post" action="/admin/users/{{ row.username }}/activate">
+          <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+          <button class="btn btn-secondary" type="submit">Activar</button>
+        </form>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

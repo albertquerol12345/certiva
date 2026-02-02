@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Documento {{ detail.doc_id[:10] }}…</h1>
+    <p style="margin:4px 0 0;color:var(--text-muted);">Tenant {{ active_tenant }}</p>
+  </div>
+  <a class="btn btn-secondary" href="/review">&larr; Volver</a>
+</div>
+
+<div class="card-grid">
+  <div class="card">
+    <h3>Resumen</h3>
+    <p><strong>{{ detail.normalized.supplier.name }}</strong></p>
+    <p>{{ detail.normalized.supplier.nif }}</p>
+    <p>Factura {{ detail.normalized.invoice.number }}</p>
+    <p>Fecha {{ detail.normalized.invoice.date }} · Vence {{ detail.normalized.invoice.due }}</p>
+    <p>Total: {{ detail.normalized.totals.gross }} {{ detail.normalized.invoice.currency }}</p>
+    <p class="pill pill-info">{{ detail.doc_type }}</p>
+    <p>
+      Confianzas · OCR {{ detail.confidences.ocr or "-" }} · Entry {{ detail.confidences.entry or "-" }} · Global {{ detail.confidences.global or "-" }}
+    </p>
+    {% if detail.suggestion %}
+    <div class="notice">
+      Sugerencia LLM → cuenta {{ detail.suggestion.account }} · IVA {{ detail.suggestion.iva_type }} ({{ detail.suggestion.confidence_llm or "-" }})
+    </div>
+    {% endif %}
+    <div>
+      <h4>Issues</h4>
+      {% if detail.issues_text %}
+        <ul class="list-inline">
+          {% for issue in detail.issues_text %}
+          <li class="pill pill-warning">{{ issue }}</li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <span class="pill pill-success">Sin issues</span>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Conciliación bancaria</h3>
+    <p>Conciliado: {{ "%.2f"|format(detail.reconciliation.amount or 0) }} ({{ "%.1f"|format((detail.reconciliation.pct or 0) * 100) }}%)</p>
+    {% if detail.reconciliation.matches %}
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Fecha</th><th>Importe</th><th>Descripción</th><th>Cuenta</th></tr></thead>
+        <tbody>
+          {% for match in detail.reconciliation.matches %}
+          <tr>
+            <td>{{ match.date }}</td>
+            <td>{{ "%.2f"|format(match.matched_amount or 0) }}</td>
+            <td>{{ match.description }}</td>
+            <td>{{ match.account_id or '-' }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p>No hay movimientos conciliados.</p>
+    {% endif %}
+    <form method="post" action="/review/{{ detail.doc_id }}/recon/clear" class="actions" style="margin-top:12px;">
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+      <label><input type="checkbox" name="include_manual" value="true"/> Incluir manuales</label>
+      <button class="btn btn-secondary" type="submit">Eliminar conciliación</button>
+    </form>
+  </div>
+</div>
+
+<div class="card">
+  <h3>Acciones</h3>
+  <div class="actions">
+    <form method="post" action="/review/{{ detail.doc_id }}/accept">
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+      <label><input type="checkbox" name="learn_rule" value="true" {% if "NO_RULE" in detail.issues %}checked{% endif %}/> Aprender regla</label>
+      <label><input type="checkbox" name="apply_to_similar" value="true"/> Aplicar a NIF similares</label>
+      <button class="btn btn-primary" type="submit">Aceptar</button>
+    </form>
+    <form method="post" action="/review/{{ detail.doc_id }}/duplicate">
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+      <button class="btn btn-secondary" type="submit">Duplicado</button>
+    </form>
+    <form method="post" action="/review/{{ detail.doc_id }}/reprocess">
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+      <button class="btn btn-secondary" type="submit">Reprocesar</button>
+    </form>
+  </div>
+  <hr style="margin:20px 0;border:0;border-top:1px solid var(--border);" />
+  <form method="post" action="/review/{{ detail.doc_id }}/edit" class="card-grid" style="margin:0;">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+    <div>
+      <label>Cuenta
+        <input type="text" name="account" value="{{ detail.entry.lines[0].account }}" />
+      </label>
+    </div>
+    <div>
+      <label>IVA (%)
+        <input type="number" step="0.01" name="iva_rate" value="{{ detail.normalized.lines[0].vat_rate }}" />
+      </label>
+    </div>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <label><input type="checkbox" name="apply_to_similar" value="true"/> Aplicar a NIF similares</label>
+    </div>
+    <div>
+      <button class="btn btn-primary" type="submit">Guardar y reprocesar</button>
+    </div>
+  </form>
+</div>
+
+<div class="card-grid">
+  <div class="card">
+    <h3>Líneas normalizadas</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Descripción</th><th>Importe</th><th>IVA</th></tr></thead>
+        <tbody>
+          {% for line in detail.normalized.lines %}
+          <tr>
+            <td>{{ line.desc }}</td>
+            <td>{{ "%.2f"|format(line.amount) }}</td>
+            <td>{{ line.vat_rate }}%</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Asiento propuesto</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Cuenta</th><th>Debe</th><th>Haber</th><th>Concepto</th></tr></thead>
+        <tbody>
+          {% for line in detail.entry.lines %}
+          <tr>
+            <td>{{ line.account }}</td>
+            <td>{{ "%.2f"|format(line.debit) }}</td>
+            <td>{{ "%.2f"|format(line.credit) }}</td>
+            <td>{{ line.concept }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

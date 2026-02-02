@@ -1,0 +1,23 @@
+.env
+*.pyc
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+
+# Entornos virtuales
+.venv/
+venv/
+env/
+
+# Datos/artefactos locales
+OUT/
+db/
+IN/
+_internal/
+IN/lote_experimentos_azure_openai/
+IN/lote_sintetico_grande/
+IN/lote_sintetico_grande_dirty/
+
+# Claves y archivos sensibles
+Albert/clavesazure.txt
+Albert/claveopenai.txt

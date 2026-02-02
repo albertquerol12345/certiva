@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:element name="Facturae">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="Parties"/>
+        <xs:element ref="Invoices"/>
+      </xs:sequence>
+      <xs:attribute name="Version" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Parties">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="SellerParty"/>
+        <xs:element ref="BuyerParty"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="SellerParty">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="TaxIdentificationNumber" type="xs:string"/>
+        <xs:element name="CorporateName" type="xs:string"/>
+        <xs:element ref="AddressInSpain"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="AddressInSpain">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Address" type="xs:string"/>
+        <xs:element name="PostCode" type="xs:string"/>
+        <xs:element name="CountryCode" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="BuyerParty">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="TaxIdentificationNumber" type="xs:string"/>
+        <xs:element name="CorporateName" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Invoices">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="Invoice" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Invoice">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="InvoiceNumber" type="xs:string"/>
+        <xs:element name="InvoiceSeriesCode" type="xs:string" minOccurs="0"/>
+        <xs:element name="InvoiceIssueDate" type="xs:string"/>
+        <xs:element ref="Items"/>
+        <xs:element ref="TaxesOutputs"/>
+        <xs:element ref="InvoiceTotals"/>
+        <xs:element ref="PaymentDetails"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Items">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="Item" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Item">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Description" type="xs:string"/>
+        <xs:element name="Quantity" type="xs:decimal"/>
+        <xs:element name="UnitPriceWithoutTax" type="xs:decimal"/>
+        <xs:element name="TaxRate" type="xs:decimal"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="TaxesOutputs">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="Tax" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Tax">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="TaxRate" type="xs:decimal"/>
+        <xs:element name="TaxableBase" type="xs:decimal"/>
+        <xs:element name="TaxAmount" type="xs:decimal"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="InvoiceTotals">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="TotalGrossAmount" type="xs:decimal"/>
+        <xs:element name="TotalTaxOutputs" type="xs:decimal"/>
+        <xs:element name="TotalInvoiceAmount" type="xs:decimal"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="PaymentDetails">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="PaymentDetail" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="PaymentDetail">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="PaymentMeans" type="xs:string"/>
+        <xs:element name="PaymentAmount" type="xs:decimal"/>
+        <xs:element name="PaymentDueDate" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

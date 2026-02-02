@@ -1,0 +1,7 @@
+# Ejemplo de policies para el tenant demo
+autopost_enabled: true
+autopost_categories_safe:
+  - suministros
+  - software
+llm_premium_threshold_gross: 1500
+canary_sample_pct: 0.05

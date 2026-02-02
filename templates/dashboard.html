@@ -1,0 +1,252 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Dashboard</h1>
+    <p style="margin:4px 0 0;color:var(--text-muted);">Visión general de la operación</p>
+  </div>
+  <div class="tenant-pill">Tenant · {{ active_tenant }}</div>
+</div>
+
+<div class="card-grid">
+  <div class="card">
+    <h3>Docs</h3>
+    <p style="font-size:2rem;margin:8px 0 4px;">{{ stats.posted }}/{{ stats.docs_total }}</p>
+    <p class="pill pill-info">Auto-post {{ "%.1f"|format(stats.auto_post_pct) }}%</p>
+    <ul class="list-inline">
+      <li>P50 {{ "%.2f"|format(stats.total_p50) }}m</li>
+      <li>P90 {{ "%.2f"|format(stats.total_p90) }}m</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Calidad</h3>
+    <p>Duplicados detectados: <strong>{{ stats.duplicates }}</strong></p>
+    <p>Reglas aprendidas: <strong>{{ stats.rules_learned }}</strong></p>
+    <p class="pill pill-warning">Preflight pendientes: {{ preflight.total }}</p>
+  </div>
+  <div class="card">
+    <div class="page-header" style="margin-bottom:8px;">
+      <h3 style="margin:0;">HITL</h3>
+      <a class="btn btn-secondary" href="/review/summary">Ver resumen</a>
+    </div>
+    <p>Pendientes: <strong>{{ review_summary.total }}</strong></p>
+    {% if review_summary.counts %}
+      <ul>
+        {% for code, count in review_summary.counts[:3] %}
+          <li><span class="pill pill-warning">{{ code }}</span> {{ issue_messages.get(code, code) }} · {{ count }}</li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="pill pill-success">Sin pendientes</p>
+    {% endif %}
+  </div>
+  <div class="card">
+    <h3>Escaneo</h3>
+    <p>Páginas totales: <strong>{{ stats.pages.total_pages }}</strong></p>
+    <p>Docs con conteo: {{ stats.pages.docs_with_page }} / {{ stats.docs_total }}</p>
+    {% if stats.pages.missing_page_docs or stats.pages.zero_page_docs %}
+      <p class="pill pill-warning">Sin conteo: {{ stats.pages.missing_page_docs }} · Páginas 0: {{ stats.pages.zero_page_docs }}</p>
+    {% else %}
+      <p class="pill pill-success">Conteo completo</p>
+    {% endif %}
+    {% if stats.batch_warnings %}
+      <p class="pill pill-danger">Batch warnings: {{ stats.batch_warnings }}</p>
+      <small>Revisa RESUMEN del último lote para detalles (docs/páginas/A3).</small>
+    {% endif %}
+  </div>
+  {% if bank.tx_total or bank.docs_total %}
+  <div class="card">
+    <h3>Conciliación bancaria</h3>
+    <p><strong>{{ bank.docs_fully }}</strong> completos / {{ bank.docs_total }}</p>
+    <p>{{ bank.docs_partial }} parciales · {{ bank.docs_unmatched }} sin conciliar</p>
+    <p class="pill pill-info">{{ bank.tx_matched }} / {{ bank.tx_total }} movimientos</p>
+  </div>
+  {% endif %}
+  {% if ar.total %}
+  <div class="card">
+    <h3>Cartera ventas</h3>
+    <p>Total: {{ ar.total }}</p>
+    <p>Cobradas: {{ ar.paid }} ({{ "%.1f"|format(ar.paid_pct) }}%)</p>
+    <p>Pendientes: {{ ar.pending }} {% if ar.overdue %}<span class="pill pill-warning">Vencidas {{ ar.overdue }}</span>{% endif %}</p>
+  </div>
+  {% endif %}
+</div>
+
+{% if stats.doc_types %}
+<div class="card">
+  <div class="page-header" style="margin-bottom:12px;">
+    <h3 style="margin:0;">Auto-post por tipo</h3>
+    <a class="btn btn-secondary" href="/review?doc_type=sales">Ir a ventas</a>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Tipo</th><th>Total</th><th>Posteados</th><th>Auto-post</th><th>% Auto-post</th></tr>
+      </thead>
+      <tbody>
+        {% for item in stats.doc_types %}
+        <tr>
+          <td>{{ item.doc_type }}</td>
+          <td>{{ item.total }}</td>
+          <td>{{ item.posted }}</td>
+          <td>{{ item.auto_post }}</td>
+          <td>{{ "%.1f"|format(item.auto_post_pct) }}%</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
+<div class="card-grid">
+  {% if pnl_summary %}
+  <div class="card">
+    <div class="page-header" style="margin-bottom:12px;">
+      <h3 style="margin:0;">Resultado (mes)</h3>
+      <a class="btn btn-secondary" href="/reports/explain?report_type=pnl&from={{ current_period.from }}&to={{ current_period.to }}&tenant={{ active_tenant }}">Explicar</a>
+    </div>
+    <p>Ingresos: {{ "%.2f"|format(pnl_summary.total_income) }}</p>
+    <p>Gastos: {{ "%.2f"|format(pnl_summary.total_expense) }}</p>
+    <p class="pill pill-info">Resultado {{ "%.2f"|format(pnl_summary.result) }}</p>
+    <ul>
+      {% for group, amount in pnl_summary.groups.items() %}
+      <li>{{ group }} · {{ "%.2f"|format(amount) }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  {% if vat_summary %}
+  <div class="card">
+    <div class="page-header" style="margin-bottom:12px;">
+      <h3 style="margin:0;">IVA (mes)</h3>
+      <a class="btn btn-secondary" href="/reports/explain?report_type=iva&from={{ current_period.from }}&to={{ current_period.to }}&tenant={{ active_tenant }}">Explicar</a>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Tipo</th><th>Soportado</th><th>Repercutido</th></tr></thead>
+        <tbody>
+          {% for key, soportado in vat_summary.soportado.items() %}
+          {% set repercutido = vat_summary.repercutido.get(key, {"base":0,"vat":0}) %}
+          <tr>
+            <td>{{ key }}</td>
+            <td>{{ "%.2f"|format(soportado.vat) }}</td>
+            <td>{{ "%.2f"|format(repercutido.vat) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if aging_summary %}
+  <div class="card">
+    <h3>Antigüedad AR</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Bucket</th><th>Importe</th></tr></thead>
+        <tbody>
+          {% for bucket, info in aging_summary.buckets.items() %}
+          <tr><td>{{ bucket }}</td><td>{{ "%.2f"|format(info.importe) }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if cashflow_summary %}
+  <div class="card">
+    <div class="page-header" style="margin-bottom:12px;">
+      <h3 style="margin:0;">Cashflow (3 meses)</h3>
+      <a class="btn btn-secondary" href="/reports/explain?report_type=cashflow&from={{ current_period.from }}&months={{ current_period.months }}&tenant={{ active_tenant }}">Explicar</a>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Periodo</th><th>Cobros</th><th>Pagos</th><th>Neto</th></tr></thead>
+        <tbody>
+          {% for bucket in cashflow_summary.buckets %}
+          <tr>
+            <td>{{ bucket.label }}</td>
+            <td>{{ "%.2f"|format(bucket.in) }}</td>
+            <td>{{ "%.2f"|format(bucket.out) }}</td>
+            <td>{{ "%.2f"|format(bucket.net) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+{% if stats.llm_stats %}
+<div class="card">
+  <h3>LLM Governance</h3>
+  <p>Llamadas: {{ stats.llm_stats.total_calls }} · Errores: {{ stats.llm_stats.errors }} · Latencia media: {{ "%.1f"|format(stats.llm_stats.avg_latency_ms) }} ms</p>
+  {% if stats.llm_stats.by_task %}
+  <ul class="list-inline">
+    {% for task, count in stats.llm_stats.by_task %}
+    <li class="pill pill-info">{{ task }} · {{ count }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+{% endif %}
+
+{% if jobs %}
+<div class="card">
+  <h3>Jobs programados</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>ID</th><th>Nombre</th><th>Tipo</th><th>Schedule</th><th>Estado</th></tr></thead>
+      <tbody>
+        {% for job in jobs %}
+        <tr>
+          <td>{{ job.id }}</td>
+          <td>{{ job.name }}</td>
+          <td>{{ job.job_type }}</td>
+          <td>{{ job.schedule or "manual" }}</td>
+          <td>
+            {% if job.enabled %}
+              <span class="pill pill-success">ON</span>
+            {% else %}
+              <span class="pill pill-warning">OFF</span>
+            {% endif %}
+            {{ job.last_status or "-" }}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
+<div class="card">
+  <div class="page-header" style="margin-bottom:12px;">
+    <h3 style="margin:0;">Checklist Pre-SII</h3>
+    <span class="pill pill-info">{{ preflight.duplicates }} duplicados</span>
+  </div>
+  <div class="card-grid">
+    <div>
+      <h4>Estados</h4>
+      <ul>
+        {% for status, count in preflight.status_counts %}
+        <li>{{ status }}: {{ count }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div>
+      <h4>Issues</h4>
+      <ul>
+        {% for code, count, label in preflight.issue_counts %}
+        <li>{{ code }} – {{ label }}: {{ count }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

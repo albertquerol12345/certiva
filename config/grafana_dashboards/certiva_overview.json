@@ -1,0 +1,120 @@
+{
+  "annotations": {"list": []},
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Auto-post %",
+      "gridPos": {"h": 4, "w": 4, "x": 0, "y": 0},
+      "targets": [
+        {
+          "expr": "avg(certiva_auto_post_pct)",
+          "legendFormat": "auto_post_pct",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "reduceOptions": {"calcs": ["last"], "fields": "", "values": false},
+        "textMode": "auto"
+      }
+    },
+    {
+      "type": "stat",
+      "title": "LLM llamadas",
+      "gridPos": {"h": 4, "w": 4, "x": 4, "y": 0},
+      "targets": [
+        {"expr": "sum(certiva_llm_calls_total)", "refId": "A"},
+        {"expr": "sum(certiva_llm_calls_errors)", "refId": "B"}
+      ],
+      "options": {
+        "reduceOptions": {"calcs": ["last"], "fields": "", "values": false},
+        "orientation": "horizontal"
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Cola HITL",
+      "gridPos": {"h": 4, "w": 4, "x": 8, "y": 0},
+      "targets": [
+        {"expr": "sum(certiva_review_queue_size)", "refId": "A"}
+      ],
+      "options": {
+        "reduceOptions": {"calcs": ["last"], "fields": "", "values": false},
+        "orientation": "horizontal"
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Batch warnings",
+      "gridPos": {"h": 4, "w": 4, "x": 12, "y": 0},
+      "targets": [
+        {"expr": "sum(certiva_batch_warning_total)", "refId": "A"}
+      ],
+      "options": {
+        "reduceOptions": {"calcs": ["last"], "fields": "", "values": false},
+        "orientation": "horizontal"
+      }
+    },
+    {
+      "type": "graph",
+      "title": "Latencia OCR / LLM",
+      "gridPos": {"h": 8, "w": 8, "x": 0, "y": 4},
+      "targets": [
+        {"expr": "avg(certiva_azure_ocr_latency_ms)", "legendFormat": "OCR", "refId": "A"},
+        {"expr": "avg(certiva_llm_latency_ms)", "legendFormat": "LLM", "refId": "B"}
+      ],
+      "lines": true,
+      "fill": 1
+    },
+    {
+      "type": "graph",
+      "title": "Coste LLM estimado (€)",
+      "gridPos": {"h": 8, "w": 8, "x": 8, "y": 4},
+      "targets": [
+        {"expr": "sum(rate(certiva_llm_cost_total[5m]))", "legendFormat": "€/s", "refId": "A"}
+      ],
+      "lines": true,
+      "fill": 1
+    },
+    {
+      "type": "table",
+      "title": "Issues principales",
+      "gridPos": {"h": 8, "w": 8, "x": 0, "y": 12},
+      "targets": [
+        {
+          "expr": "topk(5, certiva_issue_count)",
+          "legendFormat": "{{issue}}",
+          "refId": "A"
+        }
+      ],
+      "transformations": [
+        {"id": "labelsToFields", "options": {}},
+        {"id": "organize", "options": {"renameByName": {"Value": "count"}}}
+      ]
+    },
+    {
+      "type": "graph",
+      "title": "HITL pendiente",
+      "gridPos": {"h": 8, "w": 8, "x": 8, "y": 12},
+      "targets": [
+        {"expr": "sum(certiva_review_queue_size)", "refId": "A"}
+      ],
+      "lines": true,
+      "fill": 1
+    }
+  ],
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["certiva"],
+  "time": {"from": "now-24h", "to": "now"},
+  "timezone": "browser",
+  "title": "Certiva Overview"
+}

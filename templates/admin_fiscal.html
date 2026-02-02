@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Export fiscal offline</h1>
+{% if message %}<div class="alert">{{ message }}</div>{% endif %}
+
+<div class="card">
+  <h3>SII (Libro IVA)</h3>
+  <form method="post" action="/admin/fiscal/sii">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+    <label>Tenant
+      <input type="text" name="tenant" value="{{ default_tenant }}" />
+    </label>
+    <label>Desde
+      <input type="date" name="date_from" value="{{ period.from }}" required />
+    </label>
+    <label>Hasta
+      <input type="date" name="date_to" value="{{ period.to }}" required />
+    </label>
+    <button class="btn btn-primary" type="submit">Exportar SII</button>
+  </form>
+</div>
+
+<div class="card">
+  <h3>Facturae XML</h3>
+  <form method="post" action="/admin/fiscal/facturae">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+    <label>Doc ID
+      <input type="text" name="doc_id" placeholder="sales doc id" required />
+    </label>
+    <button class="btn btn-primary" type="submit">Generar XML</button>
+  </form>
+</div>
+
+<div class="card">
+  <h3>Veri*Factu</h3>
+  <form method="post" action="/admin/fiscal/verifactu">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+    <label>Doc ID
+      <input type="text" name="doc_id" required />
+    </label>
+    <label>Acción
+      <select name="action">
+        <option value="ALTA">ALTA</option>
+        <option value="MODIF">MODIF</option>
+        <option value="BAJA">BAJA</option>
+      </select>
+    </label>
+    <button class="btn btn-primary" type="submit">Registrar</button>
+  </form>
+</div>
+{% endblock %}

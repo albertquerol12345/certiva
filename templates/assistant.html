@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Asistente normativo e IA</h1>
+<p>Tenant actual: <strong>{{ active_tenant }}</strong></p>
+<div class="card">
+  <form method="post" action="/assistant">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+    <label for="question">Pregunta normativa</label>
+    <textarea id="question" name="question" rows="4" placeholder="Ej. ¿Qué cuenta uso para una factura de alquiler?">{{ question or "" }}</textarea>
+
+    <label for="doc_id">Doc ID (opcional)</label>
+    <input type="text" id="doc_id" name="doc_id" value="{{ doc_id or '' }}" placeholder="doc_id para explicar un caso real" />
+
+    <label for="doc_action">Acción sobre doc</label>
+    <select id="doc_action" name="doc_action">
+      <option value="issues" {% if doc_action == "issues" %}selected{% endif %}>Explicar issues del documento</option>
+      <option value="entry" {% if doc_action == "entry" %}selected{% endif %}>Explicar por qué se usaron esas cuentas</option>
+    </select>
+
+    <div style="margin-top:12px;">
+      <button class="btn btn-primary" type="submit">Preguntar</button>
+    </div>
+  </form>
+</div>
+
+{% if response %}
+<div class="card">
+  <h3>Respuesta</h3>
+  <pre style="white-space: pre-wrap;">{{ response }}</pre>
+</div>
+{% endif %}
+{% endblock %}

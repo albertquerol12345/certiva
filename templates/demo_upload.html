@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Demo rápida</h1>
+<p>Sube un PDF o imagen para que el motor lo procese y lo deje en el flujo estándar (OCR → reglas → export).</p>
+<div class="card">
+  <form method="post" enctype="multipart/form-data" action="/demo-upload">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+    {% if user.role == "admin" %}
+      <label>Tenant:
+        <input type="text" name="tenant_override" value="{{ active_tenant }}" />
+      </label>
+    {% endif %}
+    <label>Archivo PDF/imagen:
+      <input type="file" name="upload_file" accept=".pdf,.png,.jpg,.jpeg" required />
+    </label>
+    <button class="btn btn-primary" type="submit">Procesar</button>
+  </form>
+</div>
+{% if result %}
+  <div class="card">
+    <h3>Resultado</h3>
+    {% if result.doc_id %}
+      <p>doc_id: <code>{{ result.doc_id }}</code></p>
+      <p>Estado actual: <strong>{{ result.status }}</strong> (tenant {{ result.tenant }})</p>
+      <p><a href="/review/{{ result.doc_id }}">Abrir en HITL</a></p>
+    {% else %}
+      <p>No se pudo procesar el archivo (revisa los logs).</p>
+    {% endif %}
+  </div>
+{% endif %}
+{% endblock %}
