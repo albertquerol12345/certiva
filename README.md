@@ -1,6 +1,6 @@
 # Certiva (Portfolio Copy)
 
-![Certiva preview](assets/preview.svg)
+![Certiva preview](assets/preview.png)
 
 Local pipeline to normalize invoices, apply deterministic rules, add human-in-the-loop review when needed, and export journal entries compatible with a3innuva.
 
@@ -27,6 +27,15 @@ pip install -r requirements.txt
 # Process a sample folder (dummy OCR)
 python -m src.watcher --path IN/demo --tenant demo --recursive
 ```
+
+## Demo (headless, synthetic invoices)
+```bash
+python -m src.launcher --headless process-folder --path tests/golden --tenant demo --force-dummy
+```
+Outputs are written to `OUT/demo/<batch>/` with `RESUMEN.txt` and `incidencias.csv`.
+
+**Expected output (sample HITL queue):**
+![Certiva HITL queue](assets/preview.png)
 
 ## Web UI (HITL review)
 ```bash

@@ -244,6 +244,7 @@ def generate_entry(doc_id: str, invoice: Dict[str, Any]) -> RuleEvaluation:
     base_amount = utils.quantize_amount(totals.get("base", 0))
     vat_amount = utils.quantize_amount(totals.get("vat", 0))
     gross_amount = utils.quantize_amount(totals.get("gross", 0))
+    issues: List[str] = []
     if gross_amount >= Decimal(str(settings.llm_premium_threshold_gross)):
         _append_issue(issues, "RISK_PREMIUM")
     sensitive_categories = {"abono", "ventas_abono", "intracomunitaria", "ventas_intracom", "ventas_ticket"}
@@ -255,8 +256,6 @@ def generate_entry(doc_id: str, invoice: Dict[str, Any]) -> RuleEvaluation:
     customer_account = tenant_config.get("customer_account", "430000")
     default_journal = tenant_config.get("default_journal", "COMPRAS")
     sales_journal = tenant_config.get("sales_journal", "VENTAS")
-
-    issues: List[str] = []
     forced_issues = metadata_info.get("forced_issues") or []
     for issue_code in forced_issues:
         _append_issue(issues, issue_code)
