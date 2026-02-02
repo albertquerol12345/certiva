@@ -1,6 +1,6 @@
 # Certiva (Portfolio Copy)
 
-![Certiva preview](assets/preview.png)
+![Certiva preview](assets/preview.gif)
 
 Local pipeline to normalize invoices, apply deterministic rules, add human-in-the-loop review when needed, and export journal entries compatible with a3innuva.
 
@@ -35,7 +35,9 @@ python -m src.launcher --headless process-folder --path tests/golden --tenant de
 Outputs are written to `OUT/demo/<batch>/` with `RESUMEN.txt` and `incidencias.csv`.
 
 **Expected output (sample HITL queue):**
-![Certiva HITL queue](assets/preview.png)
+![Certiva HITL queue](assets/preview.gif)
+
+**Short demo video (30s):** `assets/demo.mp4`
 
 ## Web UI (HITL review)
 ```bash
