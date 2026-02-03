@@ -19,7 +19,7 @@ certiva_mvp/
 
 ## Requisitos
 
-- Python 3.11+
+- Python 3.10+
 - `poppler-utils` para `tests/augment.py`
 - Para dummy OCR → PDFs con texto embebido (los golden incluidos)
 - Para OCR real → credenciales de **Azure Form Recognizer** (prebuilt-invoice).
